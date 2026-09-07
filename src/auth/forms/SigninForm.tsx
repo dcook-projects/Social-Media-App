@@ -12,7 +12,7 @@ import { Link, useNavigate } from "react-router";
 import * as z from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-// import { SigninValidation } from "@/Validation";
+import { SigninValidation } from "@/lib/validation";
 // import { useSignInWithEmailAndPassword } from "@/firebase/api";
 
 type SigninFormData = z.infer<typeof SigninValidation>;
@@ -29,15 +29,15 @@ function SigninForm() {
 	const navigate = useNavigate();
 
 	async function handleSignin(user: SigninFormData) {
-		try {
-			const credential = await useSignInWithEmailAndPassword(
-				user.email,
-				user.password,
-			);
-			if (credential) navigate("/");
-		} catch (error) {
-			console.error(error);
-		}
+		// try {
+		// 	const credential = await useSignInWithEmailAndPassword(
+		// 		user.email,
+		// 		user.password,
+		// 	);
+		// 	if (credential) navigate("/");
+		// } catch (error) {
+		// 	console.error(error);
+		// }
 	}
 
 	return (
