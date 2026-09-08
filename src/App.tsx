@@ -2,26 +2,44 @@ import { useState } from 'react'
 import { Button } from "@/components/ui/button";
 import { useEffect } from 'react';
 import { supabase } from "@/lib/supabaseClient";
-import type { PostgrestError } from '@supabase/supabase-js';
+
 
 function App() {
   const [count, setCount] = useState(-1);
 
-  // useEffect(() => {
-  //   getClicks();
-  // }, []);
+  useEffect(() => {
+    getInitialClicks();
+  }, []);
+
+  async function getInitialClicks() {
+    const { data, error } = await supabase
+      .from('clicks')
+      .select('numClicks')
+      .single();
+    
+    if(error) {
+      console.error(error);
+      return;
+    }
+
+    const newCount = data.numClicks;
+    setCount(newCount);
+  }
 
   async function handleClick() {
-    const { data, error } = await supabase.from('clicks').select('numClicks').single();
+    const newCount = count + 1;
+
+    const { data, error } = await supabase
+      .from('clicks')
+      .update({ 'numClicks': newCount })
+      .eq('id', 1)
+      .select();
 
     if(error) {
       console.error(error);
       return;
     }
 
-    const newCount = data.numClicks + 1;
-
-    await supabase.from('clicks').insert({ numClicks: newCount });
     setCount(newCount);
   }
 
