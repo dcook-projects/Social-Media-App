@@ -1,39 +1,80 @@
 import { useState, useEffect, createContext, useContext, type ReactNode } from 'react';
-import type { User } from "@supabase/supabase-js";
-import { supabase } from "@/lib/supabaseClient";
-import type { CompleteUser } from '@/types/Types';
+import type { Session, User } from '@supabase/supabase-js'
+
+// import { getCurrentUser } from '@/lib/supabase/api';
+import { supabase } from "@/lib/supabaseClient"
 
 
 type AuthContextType = {
-    user: CompleteUser;
+    user: User | null;
+    session: Session | null;
     isLoading: boolean;
 }
 
-const INITIAL_USER = {
-    id: "",
-    username: "",
-    email: "",
-    bio: "",
-}
-
-const INITIAL_STATE = {
-    user: INITIAL_USER,
-    isLoading: true,
-}
-
-const AuthContext = createContext<AuthContextType>(INITIAL_STATE);
+const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<CompleteUser>(INITIAL_USER);
+  const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
+//   async function getUser() {
+//     const returnedUser = await getCurrentUser();
 
+//     if(returnedUser) {
+//       const id = returnedUser.id;
+//       const { data, error } = await supabase
+//         .from("users")
+//         .select()
+//         .eq("id", id);
+      
+//       if(error) {
+//         console.error(error);
+//         return;
+//       }
+
+//       const currentUser = data[0];
+//       setUser({
+//         id: currentUser.id,
+//         email: currentUser.email,
+//         username: currentUser.username,
+//         bio: currentUser.bio,
+//       });
+//       setIsLoading(false);
+//     }
+
+//     return;
+//   }
+  
+  async function currentSession() {
+    const { data, error } = await supabase.auth.getSession();
+
+    if(error) {
+        console.error(error);
+        return;
+    }
+
+    setSession(data.session);
+    setIsLoading(false);
+  }
+
+  useEffect(() => {
+    currentSession();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if(session) {
+          setSession(session);
+        }
+      }
+    );
+
+    return () => subscription.unsubscribe()
   }, []);
 
   const value = {
-    user: user,
-    isLoading: isLoading,
+    session,
+    user: session?.user ?? null,
+    isLoading,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
