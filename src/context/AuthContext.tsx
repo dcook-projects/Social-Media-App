@@ -1,7 +1,6 @@
 import { useState, useEffect, createContext, useContext, type ReactNode } from 'react';
 import type { Session, User } from '@supabase/supabase-js'
 
-// import { getCurrentUser } from '@/lib/supabase/api';
 import { supabase } from "@/lib/supabaseClient"
 
 
@@ -16,34 +15,6 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
-//   async function getUser() {
-//     const returnedUser = await getCurrentUser();
-
-//     if(returnedUser) {
-//       const id = returnedUser.id;
-//       const { data, error } = await supabase
-//         .from("users")
-//         .select()
-//         .eq("id", id);
-      
-//       if(error) {
-//         console.error(error);
-//         return;
-//       }
-
-//       const currentUser = data[0];
-//       setUser({
-//         id: currentUser.id,
-//         email: currentUser.email,
-//         username: currentUser.username,
-//         bio: currentUser.bio,
-//       });
-//       setIsLoading(false);
-//     }
-
-//     return;
-//   }
   
   async function currentSession() {
     const { data, error } = await supabase.auth.getSession();
@@ -58,8 +29,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
+    // determine if someone is logged in on initial load
     currentSession();
 
+    // listen for login changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if(session) {

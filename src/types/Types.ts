@@ -6,7 +6,6 @@ export type NewUser = {
 
 export type CompleteUser = {
 	id: string;
-	email: string;
 	username: string;
     bio: string;
 };
