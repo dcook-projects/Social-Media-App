@@ -58,7 +58,7 @@ export async function createUserAccount(myUser: NewUser) {
 }
 
 async function checkForSignedInUser() {
-  // check if there is already someone signed in 
+  // the call to check if there is already someone signed in 
   const { data: { user } } = await supabase.auth.getUser();
   if(user) {
     console.error("There is already a signed in user!");
@@ -78,6 +78,20 @@ async function insertUserIntoDB(user: {
   if(error) {
     console.error("Could not insert this user into the database");
     return error;
+  }
+
+  return data;
+}
+
+async function signUserIn(user: { email: string, password: string }) {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: user.email,
+    password: user.password
+  });
+
+  if(error) {
+    console.error(error);
+    throw error;
   }
 
   return data;
