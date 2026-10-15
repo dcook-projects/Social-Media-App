@@ -36,7 +36,7 @@ export async function createUserAccount(myUser: NewUser) {
   try {
     checkForSignedInUser();
 
-    //call Supabase API function to add a user to the app
+    // call Supabase API function to add a user to the app
     const { error } = await supabase.auth.signUp({
       email: myUser.email,
       password: myUser.password
@@ -45,7 +45,7 @@ export async function createUserAccount(myUser: NewUser) {
     if(error)
       throw Error;
 
-    //call Supabase API to insert the new user into the database
+    // call Supabase API to insert the new user into the database
     const newUser = insertUserIntoDB({
       username: myUser.username
     });
@@ -69,7 +69,7 @@ async function checkForSignedInUser() {
 async function insertUserIntoDB(user: {
   username: string
 }) {
-  //insert the new user into the table and get the returned row
+  // insert the new user into the table and get the returned row
   const { data, error } = await supabase
     .from('Users')
     .insert(user)
@@ -95,4 +95,16 @@ async function signUserIn(user: { email: string, password: string }) {
   }
 
   return data;
+}
+
+async function signUserOut() {
+  // local scope only signs the user out on the current session and not on all devices
+  const { error } = await supabase.auth.signOut({ scope: 'local' });
+
+  if(error) {
+    console.error(error);
+    throw error;
+  }
+
+  return error;  // this is null on successful sign out
 }
