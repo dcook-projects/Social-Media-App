@@ -34,7 +34,7 @@ import type { NewUser, CompleteUser } from "@/types/Types";
 /* Connects to the Supabase API to create a new user in the app and the database */
 export async function createUserAccount(myUser: NewUser) {
   try {
-    checkForSignedInUser();
+    await checkForSignedInUser();
 
     // call Supabase API function to add a user to the app
     const { error } = await supabase.auth.signUp({
@@ -53,7 +53,7 @@ export async function createUserAccount(myUser: NewUser) {
     return newUser;
   } catch(error) {
     console.error(error);
-    return error;
+    throw error;
   }
 }
 
@@ -83,7 +83,7 @@ async function insertUserIntoDB(user: {
   return data;
 }
 
-async function signUserIn(user: { email: string, password: string }) {
+export async function signUserIn(user: { email: string, password: string }) {
   const { data, error } = await supabase.auth.signInWithPassword({
     email: user.email,
     password: user.password
@@ -97,7 +97,7 @@ async function signUserIn(user: { email: string, password: string }) {
   return data;
 }
 
-async function signUserOut() {
+export async function signUserOut() {
   // local scope only signs the user out on the current session and not on all devices
   const { error } = await supabase.auth.signOut({ scope: 'local' });
 
