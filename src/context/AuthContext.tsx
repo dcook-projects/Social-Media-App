@@ -35,9 +35,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // listen for login changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        if(session) {
-          setSession(session);
-        }
+        setSession(session);
       }
     );
 
@@ -55,7 +53,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useUserContext() {
     const context = useContext(AuthContext);
-    if(context === undefined) {
+    if(context === null) {
         throw new Error("The context is undefined");
     }
 

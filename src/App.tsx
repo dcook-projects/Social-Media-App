@@ -6,10 +6,11 @@ import RootLayout from "@/root/RootLayout"
 import Signup from "@//auth/forms/SignupForm";
 import Signin from "@/auth/forms/SigninForm";
 import Home from "@/pages/Home";
+import CreatePost from "@/pages/CreatePost";
+import { useUserContext } from "@/context/AuthContext";
 
 
 function App() {
-  
   return (
     <main>
       <Routes>
@@ -21,7 +22,8 @@ function App() {
 
         { /* private routes */ }
         <Route element={<RootLayout />}>
-          <Route index element={<Home />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/create-post" element={<CreatePost />} />
         </Route>
       </Routes>
       <Toaster />
