@@ -1,22 +1,8 @@
-import { Outlet, Navigate } from "react-router";
-// import { useContext } from "react";
+import { Outlet } from "react-router";
 
 import hs from "@/assets/react.svg";
-import { useUserContext } from '@/context/AuthContext'
 
 function AuthLayout() {
-  const context = useUserContext();
-  console.log(context);
-
-  if(context) {
-	console.log("There is a Context!");
-	const { user, isLoading } = context;
-	if(isLoading) return <span>Loading...</span>;
-	if(user) {
-	  console.log("There is a user!");
-	  return (<Navigate to="/" />);
-	}
-  }
 
   return (
 	<div className="flex h-screen">

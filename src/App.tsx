@@ -22,7 +22,7 @@ function App() {
 
         { /* private routes */ }
         <Route element={<RootLayout />}>
-          <Route path="/" element={<Home />} />
+          <Route index element={<Home />} />
           <Route path="/create-post" element={<CreatePost />} />
         </Route>
       </Routes>
