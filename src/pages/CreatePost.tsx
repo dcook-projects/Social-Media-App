@@ -1,5 +1,5 @@
 function CreatePost() {
-    return <div></div>;
+    return <div>Create a Post!</div>;
 }
 
 export default CreatePost;

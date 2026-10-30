@@ -7,7 +7,7 @@ import Signup from "@//auth/forms/SignupForm";
 import Signin from "@/auth/forms/SigninForm";
 import Home from "@/pages/Home";
 import CreatePost from "@/pages/CreatePost";
-import { useUserContext } from "@/context/AuthContext";
+import LikedPosts from "@/pages/LikedPosts";
 
 
 function App() {
@@ -24,6 +24,7 @@ function App() {
         <Route element={<RootLayout />}>
           <Route index element={<Home />} />
           <Route path="/create-post" element={<CreatePost />} />
+          <Route path="/liked-posts" element={<LikedPosts />} />
         </Route>
       </Routes>
       <Toaster />

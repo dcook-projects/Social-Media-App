@@ -5,6 +5,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
+body {
+	@apply bg-[#000] text-white min-h-screen;
+}
+
 @theme inline {
     --font-heading: var(--font-sans);
     --font-sans: 'Inter Variable', sans-serif;
