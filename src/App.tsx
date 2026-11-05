@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router";
-import { Toaster } from "./components/ui/toast";
+import { Toaster } from "@/components/ui/sonner";
 
 import AuthLayout from "@/auth/AuthLayout";
 import RootLayout from "@/root/RootLayout"
