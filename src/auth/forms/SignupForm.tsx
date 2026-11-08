@@ -1,3 +1,9 @@
+import * as z from "zod";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SignupValidation } from "@/lib/validation";
+import { Link, useNavigate } from "react-router";
+
 import { Button } from "@/components/ui/button";
 import {
 	Field,
@@ -9,18 +15,18 @@ import {
 	FieldSet,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import * as z from "zod";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { SignupValidation } from "@/lib/validation";
-// import { useSignup } from "@/firebase/api";
-// import { toast } from "sonner";
-import { Link, useNavigate } from "react-router";
+import { toast } from "sonner";
+import { useCreateUserAccount, useSignInAccount } from "@/lib/tanstack-query/queries";
+import { useUserContext } from "@/context/AuthContext";
 
 type SignupFormData = z.infer<typeof SignupValidation>;
 
 function SignupForm() {
-	// const navigate = useNavigate();
+	const { mutateAsync: createAccount, isPending: isCreatingAccount } = useCreateUserAccount();
+	const { mutateAsync: signInAccount, isPending: isSigningIn } = useSignInAccount();
+	const { isLoading: isUserLoading } = useUserContext();
+	const navigate = useNavigate();
+
 	const form = useForm<SignupFormData>({
 		resolver: zodResolver(SignupValidation),
 		defaultValues: {
@@ -32,14 +38,24 @@ function SignupForm() {
 	});
 
 	async function handleSignup(user: SignupFormData) {
-		// try {
-		// 	await useSignup(user);
-		// 	toast.success("Account has been created");
-		// 	navigate("/");
-		// } catch (error) {
-		// 	console.error(error);
-		// 	toast.error("There was an error creating the account");
-		// }
+		try {
+			await createAccount(user);
+		} catch (error) {
+			toast.error("There was an error creating the account");
+			return;
+		}
+
+		try {
+			await signInAccount({ email: user.email, password: user.password});
+		} catch (error) {
+			toast.error("There was an error signing into your new account");
+			navigate("/signin");
+			return;
+		}
+
+		toast.success("Account created successfully");
+		navigate("/");
+		return;
 	}
 
 	return (
@@ -130,15 +146,18 @@ function SignupForm() {
 						/>
 					</FieldSet>
 					<Field>
-						<Button type="submit">Submit</Button>
+						<Button type="submit">
+							{isCreatingAccount || isUserLoading || isSigningIn ?
+							"Loading..." : "Sign Up"
+							}
+						</Button>
 					</Field>
 				</FieldGroup>
 			</form>
 
 			<p className="mt-5">
-				Have an account?
-				<Link to={"/signin"} className="text-[#1E90FF]">
-					{" "}
+				Have an account?{" "}
+				<Link to={"/signin"} className="text-[#1E90FF]">	
 					Click here
 				</Link>{" "}
 				to sign in.
