@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabaseClient"
 import type { NewUser, CompleteUser } from "@/types/Types";
+import type { User } from "@supabase/supabase-js";
 
 
 /* Connects to the Supabase API to create a new user in the app and the database */
@@ -78,4 +79,19 @@ export async function signUserOut() {
   }
 
   return error;  // this is null on successful sign out
+}
+
+export async function getUserDataFromAuthUser(id: string | undefined) {
+  const { data, error } = await supabase
+    .from('Users')
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if(error) {
+    console.error("Could not fetch the user's data", error.code, error.message, error.details);
+    throw error;
+  }
+
+  return data;
 }

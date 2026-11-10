@@ -1,7 +1,7 @@
 
 function LikedPosts() {
   return (
-    <div>LikedPosts</div>
+    <main className="flex min-h-svh flex-col items-center justify-center">Liked Posts</main>
   )
 }
 

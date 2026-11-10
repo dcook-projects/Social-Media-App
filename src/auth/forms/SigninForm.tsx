@@ -1,3 +1,9 @@
+import { toast } from "sonner";
+import { Link, useNavigate } from "react-router";
+import * as z from "zod";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 import { Button } from "@/components/ui/button";
 import {
 	Field,
@@ -8,11 +14,8 @@ import {
 	FieldSet,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Link, useNavigate } from "react-router";
-import * as z from "zod";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { SigninValidation } from "@/lib/validation";
+import { useSignInAccount } from "@/lib/tanstack-query/queries";
 
 
 type SigninFormData = z.infer<typeof SigninValidation>;
@@ -26,18 +29,20 @@ function SigninForm() {
 		},
 	});
 
+	const { mutateAsync: signInAccount, isPending } = useSignInAccount();
 	const navigate = useNavigate();
 
 	async function handleSignin(user: SigninFormData) {
-		// try {
-		// 	const credential = await useSignInWithEmailAndPassword(
-		// 		user.email,
-		// 		user.password,
-		// 	);
-		// 	if (credential) navigate("/");
-		// } catch (error) {
-		// 	console.error(error);
-		// }
+		try {
+			await signInAccount({ email: user.email, password: user.password });
+		} catch (error) {
+			toast.error("There was an error signing in");
+			return;
+		}
+
+		toast.success("Sign in successful");
+		navigate("/");
+		return;
 	}
 
 	return (
@@ -86,7 +91,9 @@ function SigninForm() {
 						/>
 					</FieldSet>
 					<Field>
-						<Button type="submit">Submit</Button>
+						<Button type="submit">
+							{ isPending ? "Loading..." : "Sign In" }
+						</Button>
 					</Field>
 				</FieldGroup>
 			</form>

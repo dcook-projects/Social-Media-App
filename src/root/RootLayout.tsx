@@ -1,14 +1,13 @@
-import { Outlet, Navigate, useNavigate } from "react-router";
+import { Outlet, Navigate } from "react-router";
 
-// import LeftSidebar from "./components/shared/LeftSidebar";
-// import TopSidebar from "./components/shared/TopSidebar";
-// import RightSidebar from "./components/shared/RightSidebar";
-// import BottomSidebar from "./components/shared/BottomSidebar";
+import LeftSidebar from "@/components/shared/LeftBar";
+import TopSidebar from "@/components/shared/TopBar";
+import RightSidebar from "@/components/shared/RightBar";
+import BottomSidebar from "@/components/shared/BottomBar";
 import { useUserContext } from "@/context/AuthContext";
 
 function RootLayout() {
   const context = useUserContext();
-  const navigate = useNavigate();
 
   if(context) {
 	const { user, isLoading } = context;
@@ -16,16 +15,16 @@ function RootLayout() {
 		return <span>Loading...</span>;
 	}
 	else if(!user) {
-		navigate("/signin");
+		return <Navigate to="/signin" replace />;
 	}
 	else {
       return (
   	    <div>
-  	      {/* <TopSidebar />
+  	      <TopSidebar />
   	      <LeftSidebar />
-  	      <RightSidebar /> */}
+  	      <RightSidebar />
   	      <Outlet />
-  	      {/* <BottomSidebar /> */}
+  	      <BottomSidebar />
   	    </div>
       );
 	}

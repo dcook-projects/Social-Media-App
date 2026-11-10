@@ -1,7 +1,7 @@
 
 function EditPost() {
   return (
-    <div>Edit a Post!</div>
+    <main className="flex min-h-svh flex-col items-center justify-center">Edit a Post!</main>
   )
 }
 

@@ -1,11 +1,14 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import type { User } from '@supabase/supabase-js';
 
 import type { NewUser, CompleteUser } from '@/types/Types'
 import {
     createUserAccount,
+    getUserDataFromAuthUser,
     signUserIn,
     signUserOut
 } from "@/lib/supabase/api";
+
 
 export function useCreateUserAccount() {
     return useMutation({
@@ -22,5 +25,13 @@ export function useSignInAccount() {
 export function useSignOutAccount() {
     return useMutation({
         mutationFn: signUserOut,
+    })
+}
+
+export function useGetUserData(id: string | undefined) {
+    return useQuery({
+        queryKey: ["get_user_by_id", id],
+        queryFn: () => getUserDataFromAuthUser(id),
+        enabled: !!id,
     })
 }
