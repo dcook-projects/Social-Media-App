@@ -7,6 +7,7 @@ import type { User } from "@supabase/supabase-js";
 export async function createUserAccount(myUser: NewUser) {
   try {
     await checkForSignedInUser();
+    await checkIfUsernameExists(myUser.username);
 
     // call Supabase API function to add a user to the app
     const { error } = await supabase.auth.signUp({
@@ -36,6 +37,18 @@ async function checkForSignedInUser() {
     console.error("There is already a signed in user!");
     throw Error;
   }
+}
+
+async function checkIfUsernameExists(name: string) {
+  const { data } = await supabase
+    .from('Users')
+    .select('username')
+    .eq('username', name)
+    .single();
+
+  // single() ensures that error is not null if select() comes up empty
+  if(data) throw Error;  // name was already found in the database
+  return;
 }
 
 async function insertUserIntoDB(user: {

@@ -5,12 +5,13 @@ export const SignupValidation = z
 		username: z
 			.string()
 			.min(2, { message: "Name must be at least 2 characters." })
-			.max(25, { message: "Name must be under 26 characters" }),
+			.max(20, { message: "Name must be under 21 characters" })
+			.regex(/^[^@#<>\/\\&,\s]+$/, { message: "Names cannot contain whitespace, @, #, <, >, /, \\, &, or a comma" }),
 		email: z.email(),
 		password: z
 			.string()
 			.min(8, { message: "Password must be at least 8 characters." })
-			.max(255, { message: "Password must be under 256 characters" }),
+			.max(25, { message: "Password must be under 26 characters" }),
 		confirmPassword: z.string(),
 	})
 	.refine((data) => data.password === data.confirmPassword, {

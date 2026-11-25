@@ -7,16 +7,17 @@ import './index.css'
 import App from './App.tsx'
 import { AuthProvider } from '@/context/AuthContext';
 
-const queryClient = new QueryClient(
-  // defaultOptions: {
-  //   queries: {
-  //     staleTime: Infinity,
-  //     refetchOnWindowFocus: false,
-  //     refetchOnReconnect: false,
-  //     refetchOnMount: false,
-  //   },
-  // },
-);
+//may need to modify these values, depending on refresh or moving between link behavior
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false,
+    },
+  },
+});
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
